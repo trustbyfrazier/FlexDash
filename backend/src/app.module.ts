@@ -19,10 +19,32 @@ import { RolesModule } from './roles/roles.module';
 import { SettingsModule } from './settings/settings.module';
 import { IntegrationsModule } from './integrations/integrations.module';
 import { SeedModule } from './seed/seed.module';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), AuthModule, UsersModule, DashboardModule, CrmModule, OrdersModule, InventoryModule, InvoicingModule, PaymentsModule, SchedulingModule, TasksModule, ProjectsModule, NotificationsModule, AdminModule, RolesModule, SettingsModule, IntegrationsModule, SeedModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    PrismaModule,
+    AuthModule,
+    UsersModule,
+    DashboardModule,
+    CrmModule,
+    OrdersModule,
+    InventoryModule,
+    InvoicingModule,
+    PaymentsModule,
+    SchedulingModule,
+    TasksModule,
+    ProjectsModule,
+    NotificationsModule,
+    AdminModule,
+    RolesModule,
+    SettingsModule,
+    IntegrationsModule,
+    SeedModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
+
