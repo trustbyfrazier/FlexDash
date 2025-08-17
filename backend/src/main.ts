@@ -13,11 +13,13 @@ async function bootstrap() {
         format: winston.format.combine(
           winston.format.timestamp(),
           winston.format.colorize(),
-          winston.format.printf(({ level, message, timestamp, context, stack }) => {
-            return `${timestamp} [${level}]${context ? ' [' + context + ']' : ''} ${message}${
-              stack ? '\n' + stack : ''
-            }`;
-          })
+          winston.format.printf(
+            ({ level, message, timestamp, context, stack }) => {
+              return `${timestamp} [${level}]${context ? ' [' + context + ']' : ''} ${message}${
+                stack ? '\n' + stack : ''
+              }`;
+            },
+          ),
         ),
       }),
       new winston.transports.File({
@@ -49,4 +51,3 @@ async function bootstrap() {
   Logger.log(`🚀 Backend running at http://localhost:${port}`, 'Bootstrap');
 }
 bootstrap();
-
