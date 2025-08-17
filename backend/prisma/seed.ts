@@ -5,6 +5,7 @@ import * as bcrypt from 'bcrypt';
 const prisma = new PrismaClient();
 
 async function main() {
+  // Upsert roles
   const adminRole = await prisma.role.upsert({
     where: { name: 'ADMIN' },
     update: {},
@@ -17,24 +18,28 @@ async function main() {
     create: { name: 'STAFF' },
   });
 
+  // Admin user credentials
   const email = 'admin@demo.com';
-  const name = 'Demo Admin';
-  const plain = 'admin123';
-  const passwordHash = await bcrypt.hash(plain, 10);
+  const firstName = 'Demo';
+  const lastName = 'Admin';
+  const plainPassword = 'admin123';
+  const passwordHash = await bcrypt.hash(plainPassword, 10);
 
+  // Upsert admin user
   await prisma.user.upsert({
     where: { email },
     update: {},
     create: {
-      name,
+      firstName,
+      lastName,
       email,
       passwordHash,
       roleId: adminRole.id,
       isFirstLogin: false, // admin already "set"
+      isActive: true,
     },
   });
 
-  // eslint-disable-next-line no-console
   console.log('✅ Seed complete: admin@demo.com / admin123');
 }
 
@@ -46,4 +51,3 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
-
