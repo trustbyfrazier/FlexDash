@@ -17,18 +17,22 @@ model Role {
 }
 
 model User {
-  id            String   @id @default(uuid())
+  id            String        @id @default(uuid())
   firstName     String
   lastName      String
-  email         String   @unique
+  email         String        @unique
   passwordHash  String
   roleId        String
-  role          Role     @relation(fields: [roleId], references: [id])
-  isFirstLogin  Boolean  @default(true)
-  isActive      Boolean  @default(true)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  role          Role          @relation(fields: [roleId], references: [id])
+  isFirstLogin  Boolean       @default(true)
+  isActive      Boolean       @default(true)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
   sessions      Session[]
+
+  // new relations
+  targetActions    UserAction[] @relation("TargetActions")
+  performedActions UserAction[] @relation("PerformedActions")
 
   @@index([roleId])
 }
@@ -40,5 +44,16 @@ model Session {
   token     String   @unique
   createdAt DateTime @default(now())
   expiresAt DateTime
+}
+
+model UserAction {
+  id            String   @id @default(cuid())
+  action        String
+  targetUserId  String
+  performedById String
+  timestamp     DateTime @default(now())
+
+  targetUser    User     @relation("TargetActions", fields: [targetUserId], references: [id])
+  performedBy   User     @relation("PerformedActions", fields: [performedById], references: [id])
 }
 

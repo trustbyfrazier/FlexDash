@@ -1,56 +1,49 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { LoginDto } from './dto/login.dto';
+
+interface JwtUserPayload {
+  id: string;
+  role: string;
+}
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private prisma: PrismaService,
-    private jwtService: JwtService,
-  ) {}
+  constructor(private jwtService: JwtService) {}
 
-  async login(dto: LoginDto) {
+  /**
+   * Login a user and generate JWTs
+   * @param user object containing at least { id, role }
+   */
+  async login(user: JwtUserPayload) {
+    const payload = { sub: user.id, role: user.role };
+
+    // Generate access and refresh tokens
+    const accessToken = this.jwtService.sign(payload, { expiresIn: '15m' });
+    const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
+
+    // Optionally, save refreshToken in DB to allow revocation
+
+    return { accessToken, refreshToken };
+  }
+
+  /**
+   * Refresh access token using a valid refresh token
+   * @param refreshToken JWT refresh token
+   */
+  async refresh(refreshToken: string) {
     try {
-      console.log('Login DTO:', dto);
+      const payload = this.jwtService.verify(refreshToken) as JwtUserPayload;
 
-      // Find user by email and include role
-      const user = await this.prisma.user.findUnique({
-        where: { email: dto.email },
-        include: { role: true }, // ensures role object is fetched
-      });
-      console.log('User found:', user);
+      // Optionally, check if refreshToken is still valid in DB
 
-      if (!user) {
-        console.log('No user found with this email');
-        throw new UnauthorizedException('Invalid credentials');
-      }
+      const newAccessToken = this.jwtService.sign(
+        { sub: payload.id, role: payload.role },
+        { expiresIn: '15m' },
+      );
 
-      // Compare password
-      const isValid = await bcrypt.compare(dto.password, user.passwordHash);
-      console.log('Password valid:', isValid);
-
-      if (!isValid) {
-        console.log('Password mismatch');
-        throw new UnauthorizedException('Invalid credentials');
-      }
-
-      // Generate JWT including role name
-      const accessToken = this.jwtService.sign({
-        sub: user.id, // standard JWT claim for user ID
-        role: user.role.name, // include role name
-      });
-
-      // Debug log
-      console.log('JWT payload:', { userId: user.id, role: user.role.name });
-      console.log('Access token generated:', accessToken);
-
-      // Return the token
-      return { accessToken };
-    } catch (err) {
-      console.error('Login error:', err);
-      throw err; // rethrow so NestJS logs it
+      return { accessToken: newAccessToken };
+    } catch {
+      throw new UnauthorizedException('Invalid refresh token');
     }
   }
 }

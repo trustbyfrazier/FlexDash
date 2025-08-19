@@ -2,11 +2,15 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Enable global validation pipe
+  // ✅ Enable cookie parsing
+  app.use(cookieParser());
+
+  // ✅ Enable global validation pipe
   app.useGlobalPipes(
     new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }),
   );
@@ -15,6 +19,7 @@ async function bootstrap() {
   const jwtGuard = app.get(JwtAuthGuard); // Nest injects JwtService automatically
   app.useGlobalGuards(jwtGuard);
 
+  // ✅ Set global prefix & enable CORS with credentials support
   app.setGlobalPrefix('api');
   app.enableCors({ origin: true, credentials: true });
 
