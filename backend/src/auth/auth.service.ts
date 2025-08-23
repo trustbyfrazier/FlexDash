@@ -1,5 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { PrismaService } from '../prisma/prisma.service';
 
 interface JwtUserPayload {
   id: string;
@@ -8,7 +9,10 @@ interface JwtUserPayload {
 
 @Injectable()
 export class AuthService {
-  constructor(private jwtService: JwtService) {}
+  constructor(
+    private jwtService: JwtService,
+    private prisma: PrismaService,
+  ) {}
 
   /**
    * Login a user and generate JWTs
@@ -46,4 +50,20 @@ export class AuthService {
       throw new UnauthorizedException('Invalid refresh token');
     }
   }
+
+  /**
+   * Logout a user by deleting token from DB
+   * @param token access token string
+   */
+  async logout(token: string) {
+    if (!token) throw new UnauthorizedException('Token missing');
+
+    // ✅ Correct: your Prisma model is `Session` with a `token` field
+    await this.prisma.session.deleteMany({
+      where: { token },
+    });
+
+    return { message: 'Logged out successfully' };
+  }
 }
+

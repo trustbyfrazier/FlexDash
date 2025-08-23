@@ -19,12 +19,15 @@ async function bootstrap() {
   const jwtGuard = app.get(JwtAuthGuard); // Nest injects JwtService automatically
   app.useGlobalGuards(jwtGuard);
 
-  // ✅ Set global prefix & enable CORS with credentials support
+  // ✅ Set global prefix & enable CORS with credentials support (frontend on :3000)
   app.setGlobalPrefix('api');
-  app.enableCors({ origin: true, credentials: true });
+  app.enableCors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+  });
 
-  await app.listen(3000);
-  Logger.log(`🚀 Backend running at http://localhost:3000`, 'Bootstrap');
+  await app.listen(5000);
+  Logger.log(`🚀 Backend running at http://localhost:5000`, 'Bootstrap');
 }
 
 bootstrap();

@@ -112,18 +112,24 @@ export class UsersService {
     return { ...updated, password };
   }
 
+  // ✅ Type-safe logAction: performedById is required
   private async logAction(
     action: string,
     targetUserId: string,
-    performedById: string,
+    performedById: string, // must be provided
   ) {
+    if (!performedById) {
+      throw new Error('logAction: performedById is required');
+    }
+
     await this.prisma.userAction.create({
       data: {
         action,
-        targetUserId,
-        performedById,
         timestamp: new Date(),
+        targetUser: { connect: { id: targetUserId } },
+        performedBy: { connect: { id: performedById } },
       },
     });
   }
 }
+

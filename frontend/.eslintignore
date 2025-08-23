@@ -1,0 +1,26 @@
+# ignore build output and deps
+.next
+/node_modules
+/dist
+/out
+coverage
+
+# ignore specific generated/compiled inside frontend nested folders
+frontend/**/.next
+frontend/flexdash/**/.next
+
+# ignore lockfiles / docs / config / static assets we don't lint
+**/*.lock
+README.md
+*.json
+*.css
+*.png
+*.jpg
+
+# ignore config files
+.eslintrc.js
+*.config.js
+*.config.cjs
+*.config.mjs
+*.config.ts
+

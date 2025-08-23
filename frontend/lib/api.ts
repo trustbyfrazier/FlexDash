@@ -4,4 +4,3 @@ export async function fetchHealth() {
   if (!res.ok) throw new Error(`Failed to fetch health: ${res.status}`);
   return res.json();
 }
-

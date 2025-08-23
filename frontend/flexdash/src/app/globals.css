@@ -24,10 +24,3 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
-
-/* Gradient background utility for animated gradients */
-.bg-gradient-animate {
-  background: linear-gradient(-45deg, #ff6ec4, #7873f5, #42e695, #fdfc47);
-  background-size: 400% 400%;
-}
-

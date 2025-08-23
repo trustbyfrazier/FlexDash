@@ -1,0 +1,27 @@
+# root-level ignore
+/node_modules
+/.next
+/dist
+/out
+/coverage
+
+# nested frontend ignores
+frontend/.next
+frontend/**/.next
+frontend/flexdash/**/.next
+
+# lockfiles / docs / config / static assets
+**/*.lock
+README.md
+*.json
+*.css
+*.png
+*.jpg
+
+# ignore configs (root + frontend)
+**/.eslintrc.js
+**/*.config.js
+**/*.config.cjs
+**/*.config.mjs
+**/*.config.ts
+

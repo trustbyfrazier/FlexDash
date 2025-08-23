@@ -8,7 +8,7 @@
     "dev:frontend": "cd frontend && npm run dev",
     "dev:backend": "cd backend && npm run start:dev",
     "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint": "eslint \"frontend/**/*.{ts,tsx,js,jsx}\" --max-warnings=0 --no-error-on-unmatched-pattern",
     "format": "prettier --write ."
   },
   "repository": {
@@ -24,8 +24,10 @@
   "homepage": "https://github.com/trustbyfrazier/FlexDash#readme",
   "devDependencies": {
     "@eslint/js": "^9.33.0",
+    "@typescript-eslint/eslint-plugin": "^8.40.0",
+    "@typescript-eslint/parser": "^8.40.0",
     "concurrently": "^9.2.0",
-    "eslint": "^9.33.0",
+    "eslint": "^9.14.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-react": "^7.37.5",
@@ -43,4 +45,3 @@
     ]
   }
 }
-
